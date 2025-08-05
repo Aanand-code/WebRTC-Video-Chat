@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Video Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div class="user-info" id="user-info">
+            <div class="blank-section">
+                <h1>Fill details to make<br>or join a call</h1>
+            </div>
+
+            <div class="user-input">
+                <h1><i class="fa-solid fa-video"></i>Video Chat</h1>
+                <input type="text" id="username-input" name="username" title="Enter your username"
+                    placeholder="Enter your username">
+                <input type="text" id="room-input" name="roomId" title="RoomID" placeholder="Room name">
+                <button id="join-btn">Join room</button>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fa-solid fa-video"></i>Video Chat</h1>
+        </div>
+
+        <!-- Video Container -->
+        <div class="video-container">
+            <div class="remote-video-container">
+                <div class="video-placeholder">
+                    <i class="fas fa-user-friends"></i>
+                    <h2>Waiting to connect...</h2>
+                    <p>Start a video call by clicking the call button below. Your video will appear in the bottom right
+                        corner.</p>
+                </div>
+                <video id="remote-video" class="video-element" autoplay playsinline></video>
+            </div>
+
+            <div class="local-video-container">
+                <div class="video-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+                <video id="local-video" class="video-element" autoplay playsinline muted></video>
+            </div>
+
+            <div class="participants"></div>
+
+            <div class="status">
+                <div class="status-indicator"></div>
+                <span class="status-text">Connected</span>
+            </div>
+
+            <!-- <div class="timer">00:00</div> -->
+
+            <div class="chat-toggle">
+                <i class="fas fa-comment-alt"></i>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="footer-controls">
+            <button class="control-btn" title="Mute">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            <button class="control-btn" title="Camera">
+                <i class="fa-solid fa-camera"></i>
+            </button>
+            <button id="call-btn" class="control-btn call-btn" title="Start Call">
+                <i class="fa-solid fa-phone"></i>
+            </button>
+            <button id="end-call-btn" class="control-btn end-call-btn" title="End Call">
+                <i class="fa-solid fa-phone-slash"></i>
+            </button>
+            <button class="control-btn" title="Screen share">
+                <i class="fa-solid fa-desktop"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Script -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>
