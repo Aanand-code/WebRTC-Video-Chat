@@ -2,17 +2,20 @@ const socket = io();
 
 const userInfo = document.getElementById('user-info');
 const userNameInput = document.getElementById('username-input');
+const user = document.getElementById('user');
+const remoteUser = document.getElementById('remote-user');
 const roomIdInput = document.getElementById('room-input');
 const joinRoomBtn = document.getElementById('join-btn');
 const callBtn = document.getElementById('call-btn');
 const endCallBtn = document.getElementById('end-call-btn');
+const statusIndicator = document.getElementById('status-indicator');
+const statusText = document.getElementById('status-text');
 
 const localVideoElem = document.getElementById('local-video');
 const remoteVideoElem = document.getElementById('remote-video');
 
 let userName;
 let roomId;
-
 let localStream;
 let remoteStream;
 let peerConnection;
@@ -28,16 +31,16 @@ let peerConfiguration = {
       username: 'openrelayproject',
       credential: 'openrelayproject',
     },
-    {
-      urls: 'turn:openrelay.metered.ca:443',
-      username: 'openrelayproject',
-      credential: 'openrelayproject',
-    },
-    {
-      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-      username: 'openrelayproject',
-      credential: 'openrelayproject',
-    },
+    // {
+    //   urls: 'turn:openrelay.metered.ca:443',
+    //   username: 'openrelayproject',
+    //   credential: 'openrelayproject',
+    // },
+    // {
+    //   urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+    //   username: 'openrelayproject',
+    //   credential: 'openrelayproject',
+    // },
   ],
 };
 
@@ -74,13 +77,19 @@ async function createPeerConnection(isOfferer) {
     });
     remoteVideoElem.srcObject = remoteStream;
     console.log('Remote stream received');
+    statusIndicator.classList.add('start-indicator');
+    statusText.textContent = 'Connected';
     endCallBtn.disabled = false;
   });
 
   //Handle ICE candidate
   peerConnection.addEventListener('icecandidate', (event) => {
     if (event.candidate) {
-      socket.emit('ice_candidate', { roomId, candidate: event.candidate });
+      socket.emit('ice_candidate', {
+        userName,
+        roomId,
+        candidate: event.candidate,
+      });
     }
   });
 
@@ -103,10 +112,14 @@ function endCall() {
   if (remoteVideoElem.srcObject) {
     remoteVideoElem.srcObject.getTracks().forEach((track) => track.stop());
     remoteVideoElem.srcObject = null;
+    remoteUser.textContent = '';
+    user.className = '';
   }
   socket.emit('leave_room', roomId);
   endCallBtn.disabled = true;
   callBtn.disabled = false;
+  statusIndicator.classList.remove('start-indicator');
+  statusText.textContent = 'Not connected';
 }
 
 socket.on('room_created', () => {
@@ -133,10 +146,15 @@ socket.on('answer', async (answer) => {
   await peerConnection.setRemoteDescription(answer);
 });
 
-socket.on('ice_candidate', (candidate) => {
+socket.on('ice_candidate', ({ candidate }) => {
   if (peerConnection) {
     peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
   }
+});
+
+socket.on('user', (user) => {
+  user.className = 'user';
+  remoteUser.textContent = `Buddy: ${user}`;
 });
 
 socket.on('user_left', () => {
@@ -153,6 +171,7 @@ joinRoomBtn.addEventListener('click', async (e) => {
     alert('If you want to create room then fill all field');
     return;
   }
+  user.textContent = `Me: ${userName}`;
   userNameInput.value = '';
   roomIdInput.value = '';
   userInfo.style.display = 'none';

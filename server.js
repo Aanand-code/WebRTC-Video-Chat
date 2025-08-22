@@ -15,8 +15,8 @@ const io = new socketIO.Server(server, {
 });
 
 // Listen only that hostname
-server.listen(PORT, () => {
-  console.log(`Server running on port no: ${PORT}`);
+server.listen(PORT, '192.168.37.1', () => {
+  console.log(`Server running on: http://192.168.37.1:${PORT}`);
 });
 
 //Serve static files like Css js in public folder
@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
 
   //Join a room
   socket.on('join_room', (userInformation) => {
-    const { roomId } = userInformation;
+    const { userName, roomId } = userInformation;
 
     Object.keys(socket.rooms).forEach((room) => {
       if (room !== socket.id) socket.leave(room);
@@ -69,8 +69,9 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('answer', answer);
   });
 
-  socket.on('ice_candidate', ({ roomId, candidate }) => {
-    socket.to(roomId).emit('ice_candidate', candidate);
+  socket.on('ice_candidate', ({ userName, roomId, candidate }) => {
+    socket.to(roomId).emit('ice_candidate', { candidate });
+    socket.to(roomId).emit('user', userName);
   });
 
   socket.on('leave_room', (roomId) => {

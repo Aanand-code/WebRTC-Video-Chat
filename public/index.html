@@ -51,11 +51,14 @@
                 <video id="local-video" class="video-element" autoplay playsinline muted></video>
             </div>
 
-            <div class="participants"></div>
+            <div class="participants">
+                <div id="user"></div>
+                <div class="remote-user" id="remote-user"></div>
+            </div>
 
             <div class="status">
-                <div class="status-indicator"></div>
-                <span class="status-text">Connected</span>
+                <div class="status-indicator" id="status-indicator"></div>
+                <span class="status-text" id="status-text">Not connected</span>
             </div>
 
             <!-- <div class="timer">00:00</div> -->

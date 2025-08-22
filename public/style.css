@@ -162,7 +162,11 @@ body {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: #4CAF50;
+    background: #fa3333;
+}
+
+.start-indicator {
+    background: #37ed27;
 }
 
 .timer {
@@ -260,6 +264,12 @@ body {
     align-items: center;
     gap: 10px;
     z-index: 20;
+}
+
+.user {
+    border-right: 2px;
+    border-color: blueviolet;
+
 }
 
 /* Login form styling */
